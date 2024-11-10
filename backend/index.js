@@ -17,9 +17,10 @@ app.use(compression());
 
 // Use CORS middleware for cross-origin requests
 app.use(cors({
-  origin: function (origin, callback) {
-    callback(null, true); // Allows all origins
-  },
+  // origin: function (origin, callback) {
+  //   callback(null, true); // Allows all origins
+  // },
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true
 }));
 
