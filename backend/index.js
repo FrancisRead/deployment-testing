@@ -56,7 +56,8 @@ io.on("connection", socket => {
 // Start the server
 try {
   server.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+    const serverUrl = process.env.CLIENT_URL || `http://localhost:${port}`
+    console.log(`Server is running at http://localhost:${serverUrl}`);
   });
 
   // Socket.IO events
