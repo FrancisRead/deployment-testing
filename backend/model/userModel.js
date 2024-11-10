@@ -193,7 +193,7 @@ export const createUser = async (req, res) =>{
         //       password: req.body.password
         //     },
         //     {
-        //       redirectTo: 'http://localhost:8080/confirm-email'  // Change this to your confirm route
+        //       redirectTo: // Change this to your confirm route
         //     }
         //   );
           

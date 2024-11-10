@@ -62,25 +62,27 @@
         </div>
     </div>
 </template>
-
 <script>
 import axios from "axios";
 import passwordunhide from "../components/passwordHide.vue";
+
+const API_BASE_URL = 'https://capstone-furrysafe-deployment.onrender.com';
 
 export default {
     components: { passwordunhide },
     data() {
         return {
-            //icons or images
+            // Icons or images
             dog: require('@/assets/images/animalshelterdog.png'),
-            // for password hide/unhide
+            // Password hide/unhide
             passwordError: false,
             showPassword: false,
-            //credential input
+            // Credential input
             userEmail: '',
             userPassword: '',
             items: [],
-        }
+            loginError: '' // Store login error messages
+        };
     },
     methods: {
         navigateTo(path) {
@@ -88,62 +90,58 @@ export default {
         },
         async handleLogin() {
             try {
-                //retrieving input from email & pass textbox 
-                const UserEmail = document.getElementById('email');
-                const UserPassword = document.getElementById('password');
-                //getting value from id
-                this.userEmail = UserEmail.value;
-                this.userPassword = UserPassword.value;
-
                 await this.getUser();
-            }
-            catch (err) {
-                console.log(err)
+            } catch (err) {
+                console.log(err);
             }
         },
         async getUser() {
             try {
-                const response = await axios.post("http://localhost:5000/login", {
+                const response = await axios.post(`${API_BASE_URL}/login`, {
                     email: this.userEmail,
                     password: this.userPassword
                 }, {
-                    withCredentials: true // This allows the request to include cookies
+                    withCredentials: true // Include cookies if needed
                 });
 
                 this.items = response.data;
                 console.log("login", response.data);
 
-                localStorage.setItem("access_token", this.items.token)
-                localStorage.setItem("u_type", this.items.userType)
-                localStorage.setItem("u_id", this.items.userID)
-                localStorage.setItem("c_id", this.items.characterId)
+                // Save tokens and user data to localStorage
+                localStorage.setItem("access_token", this.items.token);
+                localStorage.setItem("u_type", this.items.userType);
+                localStorage.setItem("u_id", this.items.userID);
+                localStorage.setItem("c_id", this.items.characterId);
                 localStorage.setItem("address_exists", this.items.address_exists);
 
+                // Redirect based on user type
                 if (response.data.success) {
                     const userType = response.data.userType;
                     if (userType === 'shelter') {
                         this.navigateTo('/shelterDashboard');
                     } else if (userType === 'buddy') {
-                        this.navigateTo('/buddydashboard'); //need ui
+                        this.navigateTo('/buddydashboard');
                     } else if (userType === 'admin') {
                         this.navigateTo('/dashboard');
                     }
                 } else {
+                    this.loginError = response.data.message || "Invalid login credentials";
                     if (response.status === 403 && response.data.message === 'Shelter is not verified') {
                         console.log('Shelter is not verified. Please verify your shelter documents.');
                     }
-                    console.log("Invalid login credentials");
                 }
 
             } catch (err) {
                 if (err.response) {
                     console.log("Error Response Data:", err.response.data);
                     console.log("Status Code:", err.response.status);
+                    this.loginError = err.response.data.message || "Login failed due to server error";
                 } else {
                     console.log("An ERROR occurred:", err.message);
+                    this.loginError = "An unexpected error occurred";
                 }
             }
-        },
-    },
-}
+        }
+    }
+};
 </script>
