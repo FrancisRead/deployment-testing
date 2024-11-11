@@ -68,6 +68,7 @@ import passwordunhide from "../components/passwordHide.vue";
 
 const API_BASE_URL = 'https://capstone-furrysafe-deployment.onrender.com';
 
+console.log("login function:)")
 export default {
     components: { passwordunhide },
     data() {
