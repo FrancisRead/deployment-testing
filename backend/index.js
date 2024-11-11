@@ -90,8 +90,9 @@ import compression from "compression";
 import { https } from 'firebase-functions';
 import { Server } from "socket.io";
 import { createServer } from 'http';
+import dotenv from 'dotenv';  // Import dotenv using ES Module syntax
 
-require('dotenv').config();
+dotenv.config();  // Load environment variables
 const app = express();
 const port = process.env.PORT || 5000;
 
