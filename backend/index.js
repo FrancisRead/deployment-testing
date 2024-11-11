@@ -25,11 +25,11 @@ app.use(compression());
 // }));
 app.use(cors({
   origin: function (origin, callback) {
-    const allowedOrigins = ['https://furrysafe-capstone.web.app', 'http://localhost:3000']; // Add any other URLs here
+    const allowedOrigins = ['https://furrysafe-capstone.web.app', 'http://localhost:8080', 'https://furrysafe-capstone.web.app/login']; // Add any other URLs here
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(err);
+      callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true
