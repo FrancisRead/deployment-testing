@@ -103,7 +103,7 @@ const handlePasswordUpdate = (newPassword) => {
 
 const getUser = async () => {
     try {
-        const response = await axios.post(`${process.env.RENDER_URL}/login`, {
+        const response = await axios.post(`${API_BASE_URL}/login`, {
             email: userEmail.value,
             password: userPassword.value
         }, {

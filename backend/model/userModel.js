@@ -247,6 +247,7 @@ export const createUser = async (req, res) =>{
 
 export const logoutUser = async (req, res) =>{
     try{
+        console.log("logging out user")
         res.cookie('refreshToken', '', {
             httpOnly: true,
             expires: new Date(0), // Set expiration date to the past

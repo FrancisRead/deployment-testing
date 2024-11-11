@@ -242,6 +242,7 @@ function toggleModal(activity) {
     }
 }
 
+const API_BASE_URL = 'https://capstone-furrysafe-deployment.onrender.com';
 
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -251,13 +252,11 @@ function navigateTo(path) {
 }
 async function logout() {
     try {
-        console.log(`${process.env.RENDER_URL}`)
-        return
-
         //req to clear cookies 
-        const response = await axios.post("http://localhost:5000/logout")
+        console.log("logging out")
+        const response = await axios.post(`${API_BASE_URL}/logout`)
+        console.log("logging out 2")
 
-        console.log(response)
         // return
         if (response.status == '200') {
             // console.log("Successfully logged out."); 
@@ -276,9 +275,6 @@ async function logout() {
         console.log(err)
     }
 }
-//  else if (activity.name === 'Test') {
-//     showModalTest.value = !showModalTest.value
-// }
 
 
 const sidebarOpen = ref(false)
