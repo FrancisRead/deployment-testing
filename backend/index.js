@@ -16,11 +16,22 @@ const server = createServer(app);
 app.use(compression());
 
 // Use CORS middleware for cross-origin requests
+// app.use(cors({
+//   // origin: function (origin, callback) {
+//   //   callback(null, true); // Allows all origins
+//   // },
+//   origin: process.env.CLIENT_URL || 'http://localhost:3000' || 'https://furrysafe-capstone.web.app',
+//   credentials: true
+// }));
 app.use(cors({
-  // origin: function (origin, callback) {
-  //   callback(null, true); // Allows all origins
-  // },
-  origin: process.env.CLIENT_URL || 'http://localhost:3000' || 'https://furrysafe-capstone.web.app',
+  origin: function (origin, callback) {
+    const allowedOrigins = ['https://furrysafe-capstone.web.app', 'http://localhost:3000']; // Add any other URLs here
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
