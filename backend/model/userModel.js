@@ -8,7 +8,7 @@ import { createToken, createRefreshToken } from "../middleware/jwt.js"
 export const validateUser = async (req, res) => {
     try{
         const { email, password } = req.body
-
+        console.log("here:", email, password)
         const { data, error } = await supabase 
             .from('tbl_user')
             .select('user_id, user_email, user_password')
