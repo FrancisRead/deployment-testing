@@ -91,6 +91,7 @@ import { https } from 'firebase-functions';
 import { Server } from "socket.io";
 import { createServer } from 'http';
 
+require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
 

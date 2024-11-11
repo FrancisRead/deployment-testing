@@ -7,6 +7,7 @@ import { createToken, createRefreshToken } from "../middleware/jwt.js"
 //LOGIN | check if user credentials exist in DATABASE
 export const validateUser = async (req, res) => {
     try{
+        console.log("here :)")
         const { email, password } = req.body
         console.log("here:", email, password)
         const { data, error } = await supabase 

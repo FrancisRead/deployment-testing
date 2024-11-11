@@ -251,6 +251,9 @@ function navigateTo(path) {
 }
 async function logout() {
     try {
+        console.log(`${process.env.RENDER_URL}`)
+        return
+
         //req to clear cookies 
         const response = await axios.post("http://localhost:5000/logout")
 

@@ -24,11 +24,12 @@
                     <div
                         class="field grid sm:text-[10px] sm:pt-5 sm:space-y-2 md:text-[12px] md:space-y-3 lg:text-[15px]">
                         <label for="email">Email </label>
-                        <input type="text" id="email" placeholder="Email Address" class="border rounded-lg py-2 px-5">
+                        <input v-model="userEmail" type="text" id="email" placeholder="Email Address"
+                            class="border rounded-lg py-2 px-5">
                     </div>
                     <div
                         class="field grid sm:text-[10px] sm:pt-5 sm:space-y-2 md:text-[12px] md:space-y-3 lg:text-[15px]">
-                        <passwordunhide />
+                        <passwordunhide @updatePassword="handlePasswordUpdate" />
                     </div>
                     <div class="flex justify-between mt-3 sm:text-[9px] md:text-[11px] lg:text-[13px]">
                         <div class="flex items-center space-x-2">
@@ -62,86 +63,88 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from "axios";
 import passwordunhide from "../components/passwordHide.vue";
 
 const API_BASE_URL = 'https://capstone-furrysafe-deployment.onrender.com';
+const router = useRouter();
 
-console.log("login function:)")
-export default {
-    components: { passwordunhide },
-    data() {
-        return {
-            // Icons or images
-            dog: require('@/assets/images/animalshelterdog.png'),
-            // Password hide/unhide
-            passwordError: false,
-            showPassword: false,
-            // Credential input
-            userEmail: '',
-            userPassword: '',
-            items: [],
-            loginError: '' // Store login error messages
-        };
-    },
-    methods: {
-        navigateTo(path) {
-            this.$router.push(path);
-        },
-        async handleLogin() {
-            try {
-                await this.getUser();
-            } catch (err) {
-                console.log(err);
+console.log("login function:)");
+
+// Icons or images
+const dog = require('@/assets/images/animalshelterdog.png');
+
+// State variables
+const passwordError = ref(false);
+const showPassword = ref(false);
+const userEmail = ref('');
+const userPassword = ref('');
+const items = ref([]);
+const loginError = ref(''); // Store login error messages
+
+const navigateTo = (path) => {
+    router.push(path);
+};
+
+const handleLogin = async () => {
+    try {
+        await getUser();
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+const handlePasswordUpdate = (newPassword) => {
+    userPassword.value = newPassword;
+};
+
+const getUser = async () => {
+    try {
+        const response = await axios.post(`${process.env.RENDER_URL}/login`, {
+            email: userEmail.value,
+            password: userPassword.value
+        }, {
+            withCredentials: true // Include cookies if needed
+        });
+
+        items.value = response.data;
+        console.log("login", response.data);
+
+        // Save tokens and user data to localStorage
+        localStorage.setItem("access_token", items.value.token);
+        localStorage.setItem("u_type", items.value.userType);
+        localStorage.setItem("u_id", items.value.userID);
+        localStorage.setItem("c_id", items.value.characterId);
+        localStorage.setItem("address_exists", items.value.address_exists);
+
+        // Redirect based on user type
+        if (response.data.success) {
+            const userType = response.data.userType;
+            if (userType === 'shelter') {
+                navigateTo('/shelterDashboard');
+            } else if (userType === 'buddy') {
+                navigateTo('/buddydashboard');
+            } else if (userType === 'admin') {
+                navigateTo('/dashboard');
             }
-        },
-        async getUser() {
-            try {
-                const response = await axios.post(`${API_BASE_URL}/login`, {
-                    email: this.userEmail,
-                    password: this.userPassword
-                }, {
-                    withCredentials: true // Include cookies if needed
-                });
-
-                this.items = response.data;
-                console.log("login", response.data);
-
-                // Save tokens and user data to localStorage
-                localStorage.setItem("access_token", this.items.token);
-                localStorage.setItem("u_type", this.items.userType);
-                localStorage.setItem("u_id", this.items.userID);
-                localStorage.setItem("c_id", this.items.characterId);
-                localStorage.setItem("address_exists", this.items.address_exists);
-
-                // Redirect based on user type
-                if (response.data.success) {
-                    const userType = response.data.userType;
-                    if (userType === 'shelter') {
-                        this.navigateTo('/shelterDashboard');
-                    } else if (userType === 'buddy') {
-                        this.navigateTo('/buddydashboard');
-                    } else if (userType === 'admin') {
-                        this.navigateTo('/dashboard');
-                    }
-                } else {
-                    this.loginError = response.data.message || "Invalid login credentials";
-                    if (response.status === 403 && response.data.message === 'Shelter is not verified') {
-                        console.log('Shelter is not verified. Please verify your shelter documents.');
-                    }
-                }
-
-            } catch (err) {
-                if (err.response) {
-                    console.log("Error Response Data:", err.response.data);
-                    console.log("Status Code:", err.response.status);
-                    this.loginError = err.response.data.message || "Login failed due to server error";
-                } else {
-                    console.log("An ERROR occurred:", err.message);
-                    this.loginError = "An unexpected error occurred";
-                }
+        } else {
+            loginError.value = response.data.message || "Invalid login credentials";
+            if (response.status === 403 && response.data.message === 'Shelter is not verified') {
+                console.log('Shelter is not verified. Please verify your shelter documents.');
             }
+        }
+
+    } catch (err) {
+        if (err.response) {
+            console.log("Error Response Data:", err.response.data);
+            console.log("Status Code:", err.response.status);
+            loginError.value = err.response.data.message || "Login failed due to server error";
+        } else {
+            console.log("An ERROR occurred:", err.message);
+            loginError.value = "An unexpected error occurred";
         }
     }
 };
