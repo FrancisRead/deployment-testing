@@ -20,7 +20,7 @@ app.use(cors({
   // origin: function (origin, callback) {
   //   callback(null, true); // Allows all origins
   // },
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: process.env.CLIENT_URL || 'http://localhost:3000' || 'https://furrysafe-capstone.web.app',
   credentials: true
 }));
 
