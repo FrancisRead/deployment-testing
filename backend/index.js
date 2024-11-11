@@ -147,8 +147,7 @@ io.on("connection", socket => {
 // Start the server
 try {
   server.listen(port, () => {
-    const serverUrl = process.env.CLIENT_URL || `http://localhost:${port}`;
-    console.log(`Server is running at http://localhost:${port}`);
+    console.log(`Server is running at ${process.env.CLIENT_URL || `http://localhost:${port}`}`);
   });
 } catch (err) {
   console.log("Error: " + err);
