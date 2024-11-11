@@ -26,7 +26,7 @@ export const validateUser = async (req, res) => {
                 const passwordMatch = await bcrypt.compare(password, user.user_password); // Compare salted hash password to input
 
                 if (!passwordMatch) {
-                    res.status(401).json({ success: false, message: 'Invalid email or password' });
+                    res.status(401).json({ success: false, message: 'Invalid email or password 1' });
                     return;
             }
 
@@ -152,13 +152,9 @@ export const validateUser = async (req, res) => {
                     token 
                 });
             }
-        
-            // If the user is not found in either table, consider it an error
-            //res.status(401).json({ success: false, message: 'User type not determined' });
-        
         } else {
             // User not found or credentials don't match
-            res.status(401).json({ success: false, message: 'Invalid email or password' });
+            res.status(401).json({ success: false, message: 'Invalid email or password 2' });
         }
     } catch(err){
         console.log("error in verifying user", err)
