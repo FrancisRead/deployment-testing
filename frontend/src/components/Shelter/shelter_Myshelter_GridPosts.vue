@@ -23,9 +23,10 @@ const toggleModalViewDetails = (id) => {
 //function
 let _user_id = localStorage.getItem('u_id')
 let posts = ref([])
+const API_BASE_URL = 'https://capstone-furrysafe-deployment.onrender.com';
 async function retrieveReports() {
     try {
-        const response = await axios.post("http://localhost:5000/getereports", {
+        const response = await axios.post(`${API_BASE_URL}/getereports`, {
             _user_id
         });
 

@@ -31,10 +31,11 @@ let selectedPost = ref(null)
 let posts = ref([])
 let selectedPostDetails = ref([])
 let _shelter_id = localStorage.getItem('c_id')
+const API_BASE_URL = 'https://capstone-furrysafe-deployment.onrender.com';
 async function retrieveReports() {
     try {
         console.log("retrieveReports")
-        const response = await axios.post("http://localhost:5000/getongoingoperations", {
+        const response = await axios.post(`${API_BASE_URL}/getongoingoperations`, {
             _shelter_id: _shelter_id,
             _status: 'Pending'
         });
